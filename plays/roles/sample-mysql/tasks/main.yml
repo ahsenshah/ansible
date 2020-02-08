@@ -1,0 +1,31 @@
+---
+# tasks file for roles/sample-mysql
+- lvg:
+      pvs: /dev/sdb
+      vg: vg_database
+      state: present
+
+- lvol:
+      lv: lv_mysql
+      vg: vg_database
+      size: '512'
+
+- filesystem:
+      dev: /dev/mapper/vg_database-lv_mysql
+      fstype: xfs
+
+- mount: 
+      src: /dev/mapper/vg_database-lv_mysql
+      path: /mnt/mysql_backups
+      state: mounted 
+      fstype: xfs
+
+- yum:
+      name: mysql
+      state: latest
+
+- firewalld:
+      zone: internal
+      port: 3306/tcp  
+      permanent: yes
+      state: enabled 

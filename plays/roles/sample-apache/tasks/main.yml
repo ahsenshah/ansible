@@ -1,0 +1,44 @@
+---
+# tasks file for roles/sample-apache
+
+- yum: 
+    name: 
+       - httpd
+       - mod_ssl
+       - php
+    state: latest
+
+- systemd:
+    name: httpd
+    state: started
+    enabled: yes
+    daemon_reload: yes
+
+- firewalld:
+    port: "{{ item }}" 
+    zone: public
+    permanent: yes
+    state: enabled 
+    immediate: yes 
+  loop:
+     - 80/tcp
+     - 443/tcp      
+
+
+- template:
+    src: index.html.j2
+    dest: /var/www/html/index.html
+
+- name: restart service when file change
+  file:
+    path: /var/www/html/index.html
+    state: file
+    owner: apache
+    group: apache
+    mode: 0644
+    modification_time: now
+    access_time: now
+  notify:
+    - restart services          
+
+

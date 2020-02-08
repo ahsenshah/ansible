@@ -1,0 +1,6 @@
+- name: creating a mysql service and partition
+  become: yes
+  hosts: database
+  roles:
+    - roles/sample-mysql
+

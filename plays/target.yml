@@ -1,0 +1,9 @@
+- name: setting up target
+  hosts: webservers
+  become: yes
+  tasks:
+     - file:
+         path: /etc/systemd/system/default.target
+         src: /usr/lib/systemd/system/graphical.target
+         state: link 
+         force: yes

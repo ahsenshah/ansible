@@ -1,0 +1,10 @@
+- name: creating schedule jobs
+  become: yes
+  hosts: proxy
+  tasks:
+     - cron:
+             user: root
+             job: /usr/bin/date > /var/log/time.log
+             special_time: hourly
+             state: present
+            

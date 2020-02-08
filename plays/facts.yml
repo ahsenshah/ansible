@@ -1,0 +1,14 @@
+- name: copying facts 
+  hosts: database
+  become: yes
+  tasks:
+   - file:       
+       path: /etc/ansible/facts.d
+       state: directory
+
+   - copy: 
+       src: /etc/ansible/facts.d/custom.fact
+       dest: /etc/ansible/facts.d/custom.fact
+       owner: root
+       group: root
+       mode: 0600

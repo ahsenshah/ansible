@@ -1,0 +1,5 @@
+- name: create apache file
+  hosts: webservers
+  become: yes
+  roles:
+      - roles/sample-apache

@@ -1,0 +1,21 @@
+- name: setting up motd
+  hosts: all
+  become: yes
+  tasks:
+   - name: changing X11 forwarding
+     lineinfile:
+           regexp: '^X11' 
+           line:
+                 X11forwarding no
+           path: /etc/ssh/sshd_config      
+           state: present 
+           backup: yes
+   - blockinfile:      
+           block: |
+                 banner /etc/motd
+                 MaxAuthTries 3 
+           path: /etc/ssh/sshd_config
+           backup: yes
+     register: results
+   - debug:
+      var: results

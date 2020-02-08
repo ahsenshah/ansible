@@ -1,0 +1,10 @@
+- hosts: webservers
+  become: yes
+  roles:
+    - roles/rhel-system-roles.selinux
+  tasks:
+      - name: setting SEBoolean
+        seboolean: 
+             name: httpd_can_network_connect       
+             persistent: yes
+             state: yes 

@@ -1,0 +1,38 @@
+- name: create a users in servers
+  hosts: all
+  become: yes
+  vars_files:
+   - vars/user_list.yml
+   - secret.yml  
+  tasks: 
+   - name: creating a users in webservers
+     user:
+         name: "{{ item.username }}"
+         uid: "{{ item.uid }}"
+         password: "{{ user_password | password_hash('sha512')}}" 
+         groups: wheel
+         shell: /bin/bash
+         state: present 
+     when: "'webservers' in group_names and item.uid|string|first=='1'" 
+     loop: "{{ users }}"     
+   
+   - name: creating a users in webservers
+     user:
+         name: "{{ item.username }}"
+         uid: "{{ item.uid }}"
+         password: "{{ database_password | password_hash('sha512')}}" 
+         groups: wheel
+         shell: /bin/bash
+         state: present 
+     when: "'database' in group_names and item.uid|string|first=='2'"
+     loop: "{{ users }}"     
+
+   - name: Distribute keys
+     authorized_key:
+         user: "{{ item.username }}"   
+         key: "{{ lookup('file', '/home/automation/.ssh/id_rsa.pub') }}"    
+         state: present 
+     when: "('webservers' in group_names and item.uid|string|first=='1' or 'database' in group_names and item.uid|string|first=='2')"   
+     loop: "{{ users }}"
+              
+              
